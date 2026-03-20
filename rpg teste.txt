@@ -1,0 +1,125 @@
+// RPG turnos, projeto base
+
+//dados
+function d10() {
+  return Math.floor(Math.random() * 10 + 1)}
+
+function d6() {
+  return Math.floor(Math.random() * 6 + 1)}
+
+function d12() {
+  return Math.floor(Math.random() * 12 + 1)}
+
+//classes
+const classes = {
+  arqueiro: {  
+    nome: 'Arqueiro',
+    hp: (lvl) => 100 + d10() * lvl,
+    def: (lvl) => 5 + d6() * lvl,
+    atk: () => d10() + 1,
+    aim: () => d10() + 1,
+    },
+  mago: {  
+    nome: 'Mago',
+    hp: (lvl) => 80 + d10() * lvl,
+    def: (lvl) => 3 + d6() * lvl,
+    atk: () => d10() + 1,
+    mana: () => d10() + 1,
+    },
+  ladino:{
+    nome: 'Ladino',
+    hp: (lvl) => 100 + d10() * lvl,
+    def: (lvl) => 5 + d6() * lvl,
+    atk: () => d10() + 1,
+    dodge: () => d10() + 1,
+  },
+  guerreiro: {
+    nome: 'Guerreiro',
+    hp: (lvl) => 120 + d10() * lvl,
+    def: (lvl) => 8 + d12() * lvl,
+    atk: () => d10() + 1,
+    armor: () => d10() + 1,
+  },
+  monge: {  
+    nome: 'Monge',
+    hp: (lvl) => 110 + d10() * lvl,
+    def: (lvl) => 6 + d10() * lvl,
+    atk: () => d10() + 1,
+    dodge: () => d10() + 1,
+    },
+};
+
+//criar personagem
+function criarPersonagem( player) = player(classe, lvl) {
+  return {
+    nome: classe.nome,
+    lvl,
+    xp: 0,
+    xpToUp: 100,
+    hpMax: classe.hp(lvl),
+    hp: classe.hp(lvl),
+    def: classe.def(lvl),
+    atk: classe.atk 
+    }
+  };
+
+//ganhoXP
+function XpUP(personagem, quantidade) {
+  personagem.xp += quantidade;
+  console.log(`${personagem.nome} ganhou ${quantidade} XP`);
+
+  if (personagem.xp >= personagem.xpToUp) {
+    lvlUP(personagem);
+  } 
+};
+
+//lvlUP
+function lvlUP(personagem) {
+  personagem.xp -= personagem.xpToUp;
+  personagem.lvl++;
+
+  personagem.xpToUp = Math.floor(personagem.xpToUp * 1.5);
+
+  personagem.hpMax += d10();
+  personagem.hp = personagem.hpMax;
+  
+  console.log(`${personagem.nome} subiu para o lvl ${personagem.lvl}!`);
+};
+
+//Inimigos
+const enemy = {
+    nome: 'Goblin', 
+    lvl: 1,
+    hp: 75 + d6() * 1,
+    atk: () => d10() + 1,
+    xp: 15
+};
+
+//combate
+function atacar(atacante, defensor) {
+  const danoBase = atacante.atk();
+  const defesa = defensor.def ? defensor.def : 0;
+  const dano = Math.max(0, danoBase - defesa);
+
+  defensor.hp = Math.max(0, defensor.hp - dano);
+
+  console.log(`${atacante.nome} causou ${dano} de dano`);
+  console.log(`${defensor.nome} agora tem ${defensor.hp} HP`);
+};
+  atacar(player, enemy);
+
+  if (enemy.hp > 0) {
+    atacar(enemy, player);
+};
+
+//turno
+function turno(atacante, defensor) {
+  if (atacante.hp <= 0) return;
+
+  atacar(atacante, defensor);
+};
+
+//lvlUP
+if (enemy.hp <= 0) {
+  XpUP(player, enemy.xp);
+};
