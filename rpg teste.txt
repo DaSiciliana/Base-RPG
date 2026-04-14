@@ -50,7 +50,7 @@ const classes = {
 };
 
 //criar personagem
-function criarPersonagem( player) = player(classe, lvl) {
+function criarPersonagem(player) = player(classe, lvl) {
   return {
     nome: classe.nome,
     lvl,
