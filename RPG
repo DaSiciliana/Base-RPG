@@ -1,0 +1,124 @@
+// RPG turnos, projeto base
+
+const Dados = {
+    d6: () => Math.floor(Math.random() * 6) + 1,
+    d10: () => Math.floor(Math.random() * 10) + 1,
+    d12: () => Math.floor(Math.random() * 12) + 1,
+    d20:() => Math.floor(Math.random() * 20) + 1,
+};
+
+//classes
+const classes = {
+  arqueiro: {  
+    nome: 'Arqueiro',
+    hp: (lvl) => 100 + Dados.d10() * lvl,
+    def: (lvl) => 5 + Dados.d6() * lvl,
+    atk: () => Dados.d10() + 1,
+    aim: () => Dados.d10() + 1,
+    },
+  mago: {  
+    nome: 'Mago',
+    hp: (lvl) => 80 + Dados.d10() * lvl,
+    def: (lvl) => 3 + Dados.d6() * lvl,
+    atk: () => Dados.d10() + 1,
+    mana: () => Dados.d10() + 1,
+    },
+  ladino:{
+    nome: 'Ladino',
+    hp: (lvl) => 100 + Dados.d10() * lvl,
+    def: (lvl) => 5 + Dados.d6() * lvl,
+    atk: () => Dados.d10() + 1,
+    dodge: () => Dados.d10() + 1,
+  },
+  guerreiro: {
+    nome: 'Guerreiro',
+    hp: (lvl) => 120 + Dados.d10() * lvl,
+    def: (lvl) => 8 + Dados.d12() * lvl,
+    atk: () => Dados.d10() + 1,
+    armor: () => Dados.d10() + 1,
+  },
+  monge: {  
+    nome: 'Monge',
+    hp: (lvl) => 110 + Dados.d10() * lvl,
+    def: (lvl) => 6 + Dados.d10() * lvl,
+    atk: () => Dados.d10() + 1,
+    dodge: () => Dados.d10() + 1,
+    },
+};
+
+//criar personagem
+function criarPersonagem(classe, lvl) {
+  return {
+    nome: classe.nome,
+    lvl,
+    xp: 0,
+    xpToUp: 100,
+    hpMax: classe.hp(lvl),
+    hp: classe.hp(lvl),
+    def: classe.def(lvl),
+    atk: classe.atk 
+    }
+  };
+
+//ganhoXP
+function XpUP(personagem, quantidade) {
+  personagem.xp += quantidade;
+  console.log(`${personagem.nome} ganhou ${quantidade} XP`);
+
+  if (personagem.xp >= personagem.xpToUp) {
+    lvlUP(personagem);
+  } 
+};
+
+//lvlUP
+function lvlUP(personagem) {
+  personagem.xp -= personagem.xpToUp;
+  personagem.lvl++;
+
+  personagem.xpToUp = Math.floor(personagem.xpToUp * 1.5);
+
+  personagem.hpMax += d10();
+  personagem.hp = personagem.hpMax;
+  
+  console.log(`${personagem.nome} subiu para o lvl ${personagem.lvl}!`);
+};
+
+//Inimigos
+function criarInimigo(nome, lvl) {
+    return enemy = {
+    nome: 'Goblin', 
+    lvl: 1,
+    hp: 75 + d6() * 1,
+    atk: () => d10() + 1,
+    xp: 15
+    }
+};
+
+//combate
+function atacar(atacante, defensor) {
+  const danoBase = atacante.atk();
+  const defesa = defensor.def ? defensor.def : 0;
+  const dano = Math.max(0, danoBase - defesa);
+
+  defensor.hp = Math.max(0, defensor.hp - dano);
+
+  console.log(`${atacante.nome} causou ${dano} de dano`);
+  console.log(`${defensor.nome} agora tem ${defensor.hp} HP`);
+};
+  atacar(player, enemy);
+
+  if (enemy.hp > 0) {
+    atacar(enemy, player);
+};
+
+//turno++
+function turno(atacante, defensor) {
+  if (atacante.hp <= 0) return;
+
+  atacar(atacante, defensor);
+};
+
+//lvlUP
+if (enemy.hp <= 0) {
+  XpUP(player, enemy.xp);
+};
